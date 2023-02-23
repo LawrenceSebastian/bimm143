@@ -1,1 +1,3 @@
-# bimm143
+# BIMM143
+My classwork from BIMM143
+
