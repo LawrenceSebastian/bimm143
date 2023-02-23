@@ -1,2 +1,2 @@
 # bimm143
-My classwork for BIMM143
+My classwork from BIMM143 UCSD.
