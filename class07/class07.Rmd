@@ -1,0 +1,216 @@
+---
+title: "Machine Learning 1"
+author: "Lawrence Adhinatha"
+date: "2023-01-31"
+output: pdf_document
+---
+
+# First up kmeans()
+
+Demo of using kmeans() function in base R. First make up some data with a known structure.
+```{r}
+tmp <- c(rnorm(30, -3), rnorm(30, 3))
+x <- cbind(x=tmp, y=rev(tmp))
+plot(x)
+```
+
+Now we have some made up data in `x` let's see how kmeans works with this data
+
+```{r}
+k <- kmeans(x, centers=2, nstart=20)
+k
+```
+
+> Q. How many points are in each cluster
+
+```{r}
+k$size
+```
+
+> Q. How do we get to the cluster membership/assignment
+
+```{r}
+k$cluster
+```
+
+> Q. What about cluster centers 
+
+```{r}
+k$centers
+```
+
+Now we've got to the main results, let's use them to plot our data with the kmeans result 
+
+```{r}
+plot(x, col=k$cluster)
+points(k$centers, col="blue", pch=15)
+```
+
+## Now for hclust()
+
+We will cluster the same data `x` with the `hclust()`. In this case `hclust()` requires a distance matrix as output.
+
+```{r}
+hc <- hclust( dist(x) )
+hc
+```
+
+Let's plot our hclust result
+
+```{r}
+plot(hc)
+```
+
+To get our cluster membership vector we need to "cut" the tree with the `cutree()` 
+
+```{r}
+grps <- cutree(hc, h=8)
+grps
+```
+
+It is often helpful to use the `k=` argument to cutree rather than the `h=` heihgt of cutting with `cutree()`. This will cut the tree to yield the number of clusters you want. 
+```{r}
+cutree(hc, k=4)
+```
+
+
+Now plot our data with the hclust() results. 
+
+```{r}
+plot(x, col=grps)
+```
+
+
+# Principal Component Analysis (PCA)
+
+## PCA of UK food data
+
+Read data from website and try a few visualizations. 
+
+```{r}
+url <- "https://tinyurl.com/UK-foods"
+x <- read.csv(url, row.names=1)
+x
+```
+
+```{r}
+cols <- rainbow(nrow(x))
+barplot( as.matrix(x), col=cols )
+```
+
+```{r}
+barplot( as.matrix(x), col=cols, beside=TRUE )
+```
+
+```{r}
+pairs(x, col=cols)
+```
+
+PCA to the rescue!
+The main base R PCA function is called `prcomp()`
+and we will need to give it the transpose of our input data in this case
+
+```{r}
+t(x)
+```
+
+```{r}
+pca <- prcomp( t(x) )
+```
+
+There is a nice summary of how well PCA accounts for the original dataset variance
+```{r}
+summary(pca)
+```
+
+```{r}
+attributes(pca)
+```
+To make our new PCA plot (aka PCA score plot) we access `pca$x`
+
+```{r}
+plot(pca$x[,1], pca$x[,2])
+text(pca$x[,1], pca$x[,2], colnames(x))
+```
+We really only needed PC1 to see the variance in this dataset. 
+
+color up the plot 
+
+```{r}
+country_cols <- c("orange", "red", "blue", "green")
+plot(pca$x[,1], pca$x[,2], xlab="PC1", ylab="PC2", xlim=c(-270,500),col=country_cols)
+text(pca$x[,1], pca$x[,2], colnames(x), col=country_cols)
+
+```
+
+We can find how much variation from the original plot each PC accounts for through this formula...
+
+```{r}
+v <- round(pca$sdev^2/sum(pca$sdev^2)*100)
+v
+```
+
+...or by using this function:
+
+```{r}
+z <- summary(pca)
+z$importance
+```
+We can visualize this in a barplot
+
+```{r}
+barplot(v, xlab="Principal Component", ylab="Percent Variation")
+```
+
+PC1 accounts for most of the variance, so we'll focus on that: 
+
+```{r}
+par(mar=c(10,3,0.35,0))
+barplot(pca$rotation[,1], las=2)
+```
+We can also examine PC2, which reflects the second largest source of variance in the data:
+
+```{r}
+par(mar=c(10,3,0.35,0))
+barplot(pca$rotation[,2], las=2)
+```
+
+We can also visualize the PCA results with the `biplot()` function: 
+
+```{r}
+biplot(pca)
+```
+This plot hints at the association between the variables positioned farther away from the clustered data, and the country positioned farthest away from the clustered data. 
+
+
+
+## PCA of RNA-Seq data
+
+Read input data from website
+```{r}
+url2 <- "https://tinyurl.com/expression-CSV"
+rna.data <- read.csv(url2, row.names=1)
+head(rna.data)
+```
+
+```{r}
+pca <- prcomp(t(rna.data))
+summary(pca)
+```
+Do our PCA plot of this RNA-Seq data
+
+```{r}
+plot(pca$x[,1], pca$x[,2], xlab="PC1", ylab="PC2")
+```
+```{r}
+plot(pca$x[,1], pca$x[,2], xlab="PC1", ylab="PC2")
+text(pca$x[,1], pca$x[,2], colnames(rna.data))
+```
+
+
+
+
+
+
+
+
