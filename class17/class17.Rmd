@@ -2,7 +2,7 @@
 title: 'Class17: Mini Project'
 author: 'Lawrence Adhinatha (PID: A16035882)'
 date: "2023-03-07"
-output: pdf_document
+output: github_document
 ---
 
 ```{r}
