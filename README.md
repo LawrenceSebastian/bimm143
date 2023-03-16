@@ -8,7 +8,7 @@ My classwork from BIMM143 at UC San Diego.
 
 - Class 6: [R Functions]()
 
-- Class 7: [Machine Learning for Bioinformatics 1](https://github.com/LawrenceSebastian/bimm143/blob/main/class07/class07.md)
+- Class 7: [Machine Learning for Bioinformatics 1](https://github.com/LawrenceSebastian/bimm143/blob/main/class07/class07.Rmd)
 
 - Class 8: [Unsupervised learning mini-project]()
 
